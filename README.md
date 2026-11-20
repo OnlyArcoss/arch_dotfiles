@@ -175,10 +175,11 @@ Les applis TUI s'ouvrent dans une fenêtre kitty flottante (`kitty --class kitty
 
 Des choses référencées dans la config mais **absentes du système** au moment de la sauvegarde :
 
-- `hyprlock` (lié à `SUPER + L`), `brightnessctl`, `pamixer` (clic droit son dans waybar), `dolphin` (file manager), `starship` (prompt zsh) ne sont pas installés :
+- `hyprlock` (lié à `SUPER + L`), `brightnessctl`, `pamixer` (clic droit son dans waybar), `dolphin` (file manager) ne sont pas installés :
   ```bash
-  sudo pacman -S hyprlock brightnessctl pamixer dolphin starship
+  sudo pacman -S hyprlock brightnessctl pamixer dolphin
   ```
+- `starship` est installé à la main dans `/usr/local/bin` (pas via pacman) : `sudo pacman -S starship` sur une nouvelle machine.
 - `~/.local/bin/toggle-waybar.sh` (lié à `SUPER + W`) n'existe pas.
 - `waybar-recorder` n'est branché sur aucun module waybar ni raccourci pour l'instant.
 - Le module VPN de waybar fait `sudo wg-quick` : il faut une règle sudoers NOPASSWD pour que le clic marche.
