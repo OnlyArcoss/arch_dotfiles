@@ -1,0 +1,37 @@
+#!/bin/bash
+menu() {
+    local prompt="$1"
+    local options="$2"
+
+    # Si wofi est déjà ouvert, on le ferme et on quitte
+    if pkill wofi; then
+        exit 0
+    fi
+
+    printf "%b" "$options" \
+    | wofi --dmenu --prompt "$prompt…" --width 280 --height 300 \
+        --style ~/.config/wofi/dmenu.css \
+    2>/dev/null
+}
+show_main_menu() {
+  case "$(menu 'Menu' \
+"󰓦  Update system
+󰜉  Restart
+󰐥  Poweroff
+󰤄  Suspend
+")" in
+*"Update system"*)
+        kitty --class kitty-float --hold -e bash -c 'sudo pacman -Syu && flatpak update'
+        ;;
+*Restart*)
+        systemctl reboot
+        ;;
+*Poweroff*)
+        systemctl poweroff
+        ;;
+*Suspend*)
+        systemctl suspend
+        ;;
+  esac
+}
+show_main_menu

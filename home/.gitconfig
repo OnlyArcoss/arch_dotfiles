@@ -1,0 +1,6 @@
+[user]
+	email = frin.arthur@gmail.com
+	name = Arthur FRIN
+[core]
+	pager = cat
+	editor = vim

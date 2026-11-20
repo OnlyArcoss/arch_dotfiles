@@ -1,0 +1,42 @@
+#!/bin/bash
+
+PIDFILE="/tmp/wf-recorder.pid"
+STARTFILE="/tmp/wf-recorder.start"
+OUTDIR="$HOME/Documents/videos"
+
+mkdir -p "$OUTDIR"
+
+case "$1" in
+  start)
+    if [ -f "$PIDFILE" ]; then
+      exit 0
+    fi
+    TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+    OUTFILE="$OUTDIR/$TIMESTAMP.mp4"
+    wf-recorder -g "$(slurp)" -f "$OUTFILE" &
+    echo $! > "$PIDFILE"
+    date +%s > "$STARTFILE"
+    ;;
+
+  stop)
+    if [ -f "$PIDFILE" ]; then
+      kill "$(cat $PIDFILE)"
+      rm -f "$PIDFILE" "$STARTFILE"
+    fi
+    ;;
+
+  status)
+    if [ ! -f "$PIDFILE" ]; then
+      echo '{"text": "", "tooltip": ""}'
+    else
+      START=$(cat "$STARTFILE")
+      NOW=$(date +%s)
+      ELAPSED=$((NOW - START))
+      H=$((ELAPSED / 3600))
+      M=$(( (ELAPSED % 3600) / 60 ))
+      S=$((ELAPSED % 60))
+      DURATION=$(printf "%02d:%02d:%02d" $H $M $S)
+      echo "{\"text\": \"⏺ $DURATION\", \"tooltip\": \"Cliquer pour arrêter\"}"
+    fi
+    ;;
+esac

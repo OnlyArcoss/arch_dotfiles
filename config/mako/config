@@ -1,0 +1,28 @@
+output=DP-2
+# Position
+anchor=top-right
+margin=16
+
+# Dimensions
+width=380
+height=110
+max-visible=5
+
+# Style
+font=JetBrainsMono 10
+background-color=#1e1e2ecc
+text-color=#cdd6f4ff
+border-color=#cba6f7d9
+border-size=2
+border-radius=4
+
+# Layout
+padding=14
+default-timeout=4000
+ignore-timeout=0
+icons=1
+max-icon-size=48
+markup=1
+
+# Format
+format=<b>%s</b>\n%b
