@@ -3,9 +3,27 @@
 # Les fichiers existants sont sauvegardés dans ~/.dotfiles-backup-<date> avant d'être remplacés.
 #   ./install.sh             -> configs uniquement
 #   ./install.sh --packages  -> installe aussi les paquets pacman / AUR / flatpak
+# Sans clone préalable :
+#   curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages
 set -euo pipefail
 
-REPO="$(cd "$(dirname "$0")" && pwd)"
+URL="https://github.com/OnlyArcoss/arch_dotfiles.git"
+DEST="$HOME/Documents/arch_dotfiles"
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
+# Lancé via curl : pas de repo autour du script -> on clone puis on relance depuis le clone.
+# stdin est repris sur le terminal pour que pacman / yay puissent poser leurs questions.
+if [ ! -f "$REPO/install.sh" ] || [ ! -d "$REPO/config" ]; then
+    command -v git >/dev/null || sudo pacman -S --needed --noconfirm git
+    if [ -d "$DEST/.git" ]; then
+        git -C "$DEST" pull --ff-only
+    else
+        git clone "$URL" "$DEST"
+    fi
+    exec bash "$DEST/install.sh" "$@" < /dev/tty
+fi
+
 BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 install_packages() {

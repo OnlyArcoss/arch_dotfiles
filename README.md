@@ -11,12 +11,20 @@ Sauvegarde de ma configuration Arch Linux + Hyprland (config en **Lua**, Hyprlan
 
 ## Installation
 
+En une commande, sur une machine neuve :
+
 ```bash
-git clone git@github.com:<user>/arch_dotfiles.git ~/Documents/arch_dotfiles
-cd ~/Documents/arch_dotfiles
-./install.sh --packages   # paquets + configs
-./install.sh              # configs uniquement
+curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages   # paquets + configs
+curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash                    # configs uniquement
 ```
+
+Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à jour s'il y est déjà, puis se relance depuis ce clone. Pour pouvoir push ensuite, passer le remote en SSH une fois la clé configurée :
+
+```bash
+git -C ~/Documents/arch_dotfiles remote set-url origin git@github.com:OnlyArcoss/arch_dotfiles.git
+```
+
+Depuis un clone existant : `./install.sh --packages` ou `./install.sh`.
 
 `install.sh` copie les fichiers du repo dans `$HOME`. Tout fichier existant est d'abord déplacé dans `~/.dotfiles-backup-<date>/`, rien n'est écrasé sans sauvegarde.
 
