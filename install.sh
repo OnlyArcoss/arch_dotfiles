@@ -7,6 +7,11 @@
 #   curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages
 set -euo pipefail
 
+if [ "$(id -u)" -eq 0 ]; then
+    echo "Ne pas lancer en root : utilise ton utilisateur (avec sudo), sur le système installé." >&2
+    exit 1
+fi
+
 URL="https://github.com/OnlyArcoss/arch_dotfiles.git"
 DEST="$HOME/Documents/arch_dotfiles"
 
@@ -27,7 +32,11 @@ fi
 BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 install_packages() {
-    sudo pacman -S --needed - < "$REPO/packages/pacman.txt"
+    # multilib (steam) n'est pas activé par défaut
+    if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
+        sudo sed -i '/^#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
+    fi
+    sudo pacman -Syu --needed - < "$REPO/packages/pacman.txt"
     if ! command -v yay >/dev/null; then
         git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
         (cd /tmp/yay-bin && makepkg -si --noconfirm)
