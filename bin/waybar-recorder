@@ -11,23 +11,34 @@ case "$1" in
     if [ -f "$PIDFILE" ]; then
       exit 0
     fi
+    GEOMETRY=$(slurp) || exit 0
     TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
     OUTFILE="$OUTDIR/$TIMESTAMP.mp4"
-    wf-recorder -g "$(slurp)" -f "$OUTFILE" &
+    wf-recorder -g "$GEOMETRY" -f "$OUTFILE" &
     echo $! > "$PIDFILE"
     date +%s > "$STARTFILE"
+    pkill -RTMIN+8 waybar
     ;;
 
   stop)
     if [ -f "$PIDFILE" ]; then
-      kill "$(cat $PIDFILE)"
+      kill "$(cat "$PIDFILE")"
       rm -f "$PIDFILE" "$STARTFILE"
+      pkill -RTMIN+8 waybar
     fi
     ;;
 
+  toggle)
+    if [ -f "$PIDFILE" ]; then "$0" stop; else "$0" start; fi
+    ;;
+
   status)
+    # wf-recorder mort (erreur, kill externe) : on nettoie
+    if [ -f "$PIDFILE" ] && ! kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+      rm -f "$PIDFILE" "$STARTFILE"
+    fi
     if [ ! -f "$PIDFILE" ]; then
-      echo '{"text": "", "tooltip": ""}'
+      echo '{"text": "󰑊", "tooltip": "Enregistrer une zone", "class": "idle"}'
     else
       START=$(cat "$STARTFILE")
       NOW=$(date +%s)
@@ -36,7 +47,7 @@ case "$1" in
       M=$(( (ELAPSED % 3600) / 60 ))
       S=$((ELAPSED % 60))
       DURATION=$(printf "%02d:%02d:%02d" $H $M $S)
-      echo "{\"text\": \"⏺ $DURATION\", \"tooltip\": \"Cliquer pour arrêter\"}"
+      echo "{\"text\": \"⏺ $DURATION\", \"tooltip\": \"Cliquer pour arrêter\", \"class\": \"active\"}"
     fi
     ;;
 esac

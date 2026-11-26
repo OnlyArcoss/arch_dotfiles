@@ -19,6 +19,9 @@ hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/tog
 -- Screenshot région
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region -c"))
 
+-- Enregistrement d'écran région (arrêt : clic sur le module waybar)
+hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/waybar-recorder start"))
+
 -- Déplacement du focus
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "l" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "r" }))

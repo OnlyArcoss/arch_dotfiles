@@ -6,7 +6,7 @@
   "spacing": 0,
   "height": 26,
   "modules-left": ["custom/menu", "hyprland/workspaces"],
-  "modules-center": ["clock"],
+  "modules-center": ["clock", "custom/recorder"],
   "modules-right": [
     "mpris",
     "group/tray-expander",
@@ -56,6 +56,13 @@
     "format": "{:L%A %H:%M}",
     "format-alt": "{:L%d %B W%V %Y}",
     "tooltip": false,
+  },
+  "custom/recorder": {
+    "exec": "~/.local/bin/waybar-recorder status",
+    "return-type": "json",
+    "interval": 1,
+    "signal": 8,
+    "on-click": "~/.local/bin/waybar-recorder toggle",
   },
   "custom/wg": {
     "exec": "bash -c 'ip link show afrin &>/dev/null && echo \"\" || echo \"\"'",

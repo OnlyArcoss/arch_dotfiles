@@ -142,6 +142,7 @@ Config modulaire en Lua : `hyprland.lua` ne fait que charger les modules.
 | `SUPER + W` | Afficher/masquer waybar (`toggle-waybar.sh`) |
 | `SUPER + M` | Quitter Hyprland |
 | `SUPER + SHIFT + S` | Capture d'une zone → presse-papier (hyprshot) |
+| `SUPER + SHIFT + R` | Enregistrer une zone de l'écran (`waybar-recorder`), clic sur le chrono dans waybar pour arrêter |
 | `SUPER + flèches` | Déplacer le focus |
 | `SUPER + & é " ' ( - è _ ç à` | Workspace 1 → 10 (AZERTY) |
 | `SUPER + SHIFT + (idem)` | Envoyer la fenêtre sur le workspace |
@@ -175,7 +176,7 @@ Les applis TUI s'ouvrent dans une fenêtre kitty flottante (`kitty --class kitty
 | Script | Description |
 |---|---|
 | `system-menu` | Menu Wofi (dmenu) : mise à jour système (`pacman -Syu` + `flatpak update` dans un kitty flottant), redémarrer, éteindre, mettre en veille. Relancer le raccourci ferme le menu s'il est ouvert. Lié à `SUPER + Échap` et au bouton menu de waybar |
-| `waybar-recorder` | Enregistrement d'écran d'une zone avec `wf-recorder` + `slurp` → `~/Documents/videos/`. `start` / `stop` / `status` (`status` renvoie du JSON avec la durée, fait pour un module custom waybar) |
+| `waybar-recorder` | Enregistrement d'écran d'une zone avec `wf-recorder` + `slurp` → `~/Documents/videos/`. `start` / `stop` / `toggle` / `status` (`status` renvoie du JSON avec la durée, utilisé par le module `custom/recorder` de waybar : icône à côté de l'horloge pour lancer, chrono pendant l'enregistrement, clic pour arrêter) |
 
 ---
 
@@ -189,6 +190,5 @@ Des choses référencées dans la config mais **absentes du système** au moment
   ```
 - `starship` est installé à la main dans `/usr/local/bin` (pas via pacman) : `sudo pacman -S starship` sur une nouvelle machine.
 - `~/.local/bin/toggle-waybar.sh` (lié à `SUPER + W`) n'existe pas.
-- `waybar-recorder` n'est branché sur aucun module waybar ni raccourci pour l'instant.
 - Le module VPN de waybar fait `sudo wg-quick` : il faut une règle sudoers NOPASSWD pour que le clic marche.
 - Les noms d'écrans (`HDMI-A-1`, `DP-2`) sont propres à cette machine : à adapter dans `monitors.lua`, `hyprpaper.conf`, `waybar/config.jsonc` et `mako/config` sur une autre machine.
