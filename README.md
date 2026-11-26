@@ -42,7 +42,7 @@ git commit -am "update" && git push
 
 | Dans le repo | Emplacement sur le système | Contenu |
 |---|---|---|
-| `config/hypr/` | `~/.config/hypr/` | `hyprland.lua` + `modules/*.lua`, `hyprlock.conf`, `hyprpaper.conf`, `xdph.conf` |
+| `config/hypr/` | `~/.config/hypr/` | `hyprland.lua` + `modules/*.lua`, `hyprlock.conf`, `hyprpaper.conf`, `xdph.conf`, `hyprtoolkit.conf` |
 | `config/waybar/` | `~/.config/waybar/` | `config.jsonc`, `style.css` |
 | `config/wofi/` | `~/.config/wofi/` | `config`, `menu.css` (launcher), `dmenu.css` (menu système) |
 | `config/kitty/` | `~/.config/kitty/` | `kitty.conf` |
@@ -151,7 +151,7 @@ Config modulaire en Lua : `hyprland.lua` ne fait que charger les modules.
 
 **Hyprlock** : fond = capture d'écran floutée, heure au-dessus d'un champ de mot de passe centré.
 **Hyprpaper** : `~/Documents/wallpapers/minimal_landscape.jpg` sur les deux écrans (+ fallback).
-**xdph** : partage d'écran autorisé par défaut, curseur inclus.
+**xdph** : partage d'écran autorisé par défaut, curseur inclus. Le sélecteur d'écran prend les couleurs Catppuccin Mocha / mauve via `hyprtoolkit.conf`.
 
 ### Waybar (`config/waybar/`)
 Barre en haut, 26px, sur `HDMI-A-1` uniquement.
