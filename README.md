@@ -49,13 +49,11 @@ git commit -am "update" && git push
 | `config/mako/` | `~/.config/mako/` | `config` |
 | `config/swayosd/` | `~/.config/swayosd/` | `config.toml`, `style.css` |
 | `config/fastfetch/` | `~/.config/fastfetch/` | `config.jsonc` |
-| `config/btop/` | `~/.config/btop/` | `btop.conf` |
-| `config/cava/` | `~/.config/cava/` | `config`, thèmes, shaders |
+| `config/btop/` | `~/.config/btop/` | `btop.conf` (thème uniquement, déposé par `install.sh`, pas synchronisé : btop réécrit tout le fichier) |
 | `config/gtk-3.0/`, `config/gtk-4.0/` | `~/.config/gtk-*/` | `settings.ini` (les `.css` GTK4 sont des liens vers le thème, recréés par `install.sh`) |
-| `config/nwg-look/`, `config/xsettingsd/` | `~/.config/…` | réglages du thème GTK |
+| `config/nwg-look/` | `~/.config/nwg-look/` | réglages du thème GTK |
 | `config/git/ignore` | `~/.config/git/ignore` | gitignore global |
-| `config/mimeapps.list` | `~/.config/mimeapps.list` | applications par défaut |
-| `home/` | `~/` | `.zshrc`, `.zprofile`, `.bashrc`, `.bash_profile`, `.gitconfig` |
+| `home/` | `~/` | `.zshrc`, `.zprofile`, `.gitconfig` |
 | `bin/` | `~/.local/bin/` | scripts perso (voir plus bas) |
 | `wallpapers/` | `~/Documents/wallpapers/` | `minimal_landscape.jpg` (utilisé par hyprpaper) |
 | `packages/` | — | `pacman.txt`, `aur.txt`, `flatpak.txt` |

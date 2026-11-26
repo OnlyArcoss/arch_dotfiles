@@ -75,6 +75,9 @@ for f in "$REPO"/bin/*; do
     chmod +x "$HOME/.local/bin/$(basename "$f")"
 done
 
+# Navigateur par défaut (remplace l'ancien mimeapps.list versionné)
+xdg-settings set default-web-browser firefox.desktop 2>/dev/null || true
+
 echo "Wallpapers :"
 mkdir -p "$HOME/Documents/wallpapers"
 cp -n "$REPO"/wallpapers/* "$HOME/Documents/wallpapers/"
