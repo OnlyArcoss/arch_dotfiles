@@ -3,7 +3,7 @@
 # Les fichiers existants sont sauvegardés dans ~/.dotfiles-backup-<date> avant d'être remplacés.
 #   ./install.sh             -> configs uniquement
 #   ./install.sh --packages  -> installe aussi le minimum pour que la conf marche (packages/*.txt)
-# Les drivers graphiques sont à part : ./gpu.sh
+# Les drivers graphiques ne sont pas installés : à faire soi-même selon la carte.
 # Sans clone préalable :
 #   curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages
 set -euo pipefail
@@ -97,5 +97,5 @@ if [ -d "$THEME" ]; then
 fi
 
 [ -d "$BACKUP" ] && echo "Anciens fichiers sauvegardés dans $BACKUP"
-echo "Terminé. Drivers graphiques : $REPO/gpu.sh"
+echo "Terminé. Drivers graphiques : à installer selon ta carte."
 echo "Pense à créer ~/.zshrc.local pour les secrets (NPM_TOKEN...)."

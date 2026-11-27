@@ -20,7 +20,6 @@ sudo pacman -S --needed git
 git clone https://github.com/OnlyArcoss/arch_dotfiles.git ~/Documents/arch_dotfiles
 cd ~/Documents/arch_dotfiles
 ./install.sh --packages     # paquets minimum + configs (./install.sh seul = configs uniquement)
-./gpu.sh                    # drivers graphiques
 sudo systemctl enable --now bluetooth
 reboot
 ```
@@ -57,7 +56,6 @@ Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à j
 | `bin/` | `~/.local/bin/` | scripts perso (voir plus bas) |
 | `wallpapers/` | `~/Documents/wallpapers/` | `minimal_landscape.jpg` (utilisé par hyprpaper) |
 | `packages/` | — | `pacman.txt`, `aur.txt` : paquets minimum pour la conf |
-| `gpu.sh` | — | drivers graphiques NVIDIA / AMD / Intel |
 
 > **Secrets** : `.zshrc` charge `~/.zshrc.local` s'il existe. Les tokens (`NPM_TOKEN`, …) vont dans ce fichier, qui n'est **pas** versionné.
 
@@ -71,20 +69,15 @@ Thème **Colloid** (GTK + icônes) : paquets AUR `colloid-gtk-theme` et `colloid
 
 ### Drivers graphiques
 
-À part, à lancer quand on veut :
-
-```bash
-./gpu.sh           # détecte la carte (lspci)
-./gpu.sh amd       # ou force : nvidia | amd | intel
-```
+Pas installés par le script : à faire soi-même selon la carte. Pour mémoire :
 
 | Carte | Paquets |
 |---|---|
-| NVIDIA | `nvidia-open-dkms` `nvidia-utils` `lib32-nvidia-utils` `nvidia-settings` `libva-nvidia-driver` + headers des noyaux installés |
+| NVIDIA (GTX 16xx / RTX et +) | `nvidia-open` `nvidia-utils` `lib32-nvidia-utils` `nvidia-settings` `libva-nvidia-driver` |
 | AMD | `mesa` `lib32-mesa` `vulkan-radeon` `lib32-vulkan-radeon` |
 | Intel | `mesa` `lib32-mesa` `vulkan-intel` `lib32-vulkan-intel` `intel-media-driver` |
 
-Le script active multilib (pour les `lib32-*`, utiles à Steam/Wine). Côté config, la seule variable spécifique NVIDIA (`LIBVA_DRIVER_NAME=nvidia` dans `env.lua`) n'est posée que si le module `nvidia` est chargé : rien à changer sur AMD/Intel.
+Les `lib32-*` (Steam/Wine) demandent d'activer `[multilib]` dans `/etc/pacman.conf`. Côté config, la seule variable spécifique NVIDIA (`LIBVA_DRIVER_NAME=nvidia` dans `env.lua`) n'est posée que si le module `nvidia` est chargé : rien à changer sur AMD/Intel.
 
 ---
 
