@@ -11,7 +11,21 @@ Sauvegarde de ma configuration Arch Linux + Hyprland (config en **Lua**, Hyprlan
 
 ## Installation
 
-En une commande, sur une machine neuve :
+**Pendant archinstall** : se connecter au wifi sur l'ISO (`iwctl station wlan0 connect "SSID"`) puis choisir **Copy ISO network configuration to installation** dans Network configuration. Le système installé a alors iwd + systemd-networkd + systemd-resolved et se reconnecte tout seul (c'est ce qu'utilisent impala et waybar).
+
+Ensuite, connecté avec son utilisateur (pas root) :
+
+```bash
+sudo pacman -S --needed git
+git clone https://github.com/OnlyArcoss/arch_dotfiles.git ~/Documents/arch_dotfiles
+cd ~/Documents/arch_dotfiles
+./install.sh --packages     # paquets minimum + configs (./install.sh seul = configs uniquement)
+./gpu.sh                    # drivers graphiques
+sudo systemctl enable --now bluetooth
+reboot
+```
+
+Ou sans cloner à la main :
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages   # paquets + configs
@@ -20,9 +34,7 @@ curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/insta
 
 Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à jour s'il y est déjà, puis se relance depuis ce clone.
 
-Depuis un clone existant : `./install.sh --packages` ou `./install.sh`. Les drivers graphiques se font après, avec `./gpu.sh` (voir plus bas).
-
-`install.sh` copie les fichiers du repo dans `$HOME`. Tout fichier existant est d'abord déplacé dans `~/.dotfiles-backup-<date>/`, rien n'est écrasé sans sauvegarde.
+`install.sh` copie les fichiers du repo dans `$HOME`. Tout fichier existant est d'abord déplacé dans `~/.dotfiles-backup-<date>/`, rien n'est écrasé sans sauvegarde. Il passe aussi le shell de login à zsh (sinon `.zprofile` ne lance pas Hyprland) et remplace `~` par le vrai home dans `hyprpaper.conf`.
 
 ---
 
@@ -74,12 +86,6 @@ Thème **Colloid** (GTK + icônes) : paquets AUR `colloid-gtk-theme` et `colloid
 
 Le script active multilib (pour les `lib32-*`, utiles à Steam/Wine). Côté config, la seule variable spécifique NVIDIA (`LIBVA_DRIVER_NAME=nvidia` dans `env.lua`) n'est posée que si le module `nvidia` est chargé : rien à changer sur AMD/Intel.
 
-### Services
-
-```bash
-sudo systemctl enable --now iwd bluetooth
-```
-
 ---
 
 ## Configurations appliquées
@@ -127,7 +133,7 @@ Config modulaire en Lua : `hyprland.lua` ne fait que charger les modules.
 **xdph** : partage d'écran autorisé par défaut, curseur inclus. Le sélecteur d'écran prend les couleurs Catppuccin Mocha / mauve via `hyprtoolkit.conf`.
 
 ### Waybar (`config/waybar/`)
-Barre en haut, 26px, sur `HDMI-A-1` uniquement.
+Barre en haut, 26px, sur tous les écrans sauf `DP-2` (donc `HDMI-A-1` ici, l'écran intégré sur un portable).
 - **Gauche** : bouton menu (ouvre `system-menu`) · workspaces (1-5 persistants)
 - **Centre** : horloge (`jour HH:MM`, clic → date complète + n° de semaine)
 - **Droite** : mpris (lecture en cours) · tray repliable · bluetooth (→ `bluetui`) · VPN WireGuard `afrin` (clic = up/down) · réseau (→ `impala`) · son (→ `wiremix`, clic droit = mute) · CPU (→ `btop`) · batterie
@@ -136,7 +142,7 @@ Les applis TUI s'ouvrent dans une fenêtre kitty flottante (`kitty --class kitty
 
 ### Autres
 - **Wofi** : launcher 630x400 centré, icônes, insensible à la casse, thème sombre
-- **Mako** : notifications en haut à droite sur `DP-2`, JetBrainsMono 10, fond `#1e1e2e`, bordure violette, 4 s
+- **Mako** : notifications en haut à droite de l'écran actif, JetBrainsMono 10, fond `#1e1e2e`, bordure violette, 4 s
 - **Kitty** : FiraCode Nerd Font Mono, fond `#1a1b26`, padding horizontal 12, pas de confirmation à la fermeture
 - **SwayOSD** : OSD affiché en bas de l'écran (`top_margin = 0.95`)
 - **Zsh** : historique partagé 10 000 lignes, starship, zsh-autosuggestions, nvm, Android SDK, SDKMAN, alias `zed='zeditor'`
@@ -160,4 +166,4 @@ Des choses référencées dans la config mais **absentes du système** au moment
 - `dolphin` (file manager, `SUPER + E`) n'est pas dans la liste minimale : l'installer ou changer `fileManager` dans `variables.lua`.
 - `~/.local/bin/toggle-waybar.sh` (lié à `SUPER + W`) n'existe pas.
 - Le module VPN de waybar fait `sudo wg-quick` : il faut une règle sudoers NOPASSWD pour que le clic marche.
-- Les noms d'écrans (`HDMI-A-1`, `DP-2`) sont propres à cette machine : à adapter dans `monitors.lua`, `hyprpaper.conf`, `waybar/config.jsonc` et `mako/config` sur une autre machine.
+- Les noms d'écrans (`HDMI-A-1`, `DP-2`) sont propres à cette machine. Ailleurs, tout s'affiche quand même (Hyprland prend la résolution préférée, hyprpaper a un fallback, waybar va sur tous les écrans sauf `DP-2`), mais la position / fréquence se règle dans `monitors.lua`.

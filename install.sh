@@ -35,8 +35,11 @@ BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 install_packages() {
     sudo pacman -Syu --needed - < "$REPO/packages/pacman.txt"
     if ! command -v yay >/dev/null; then
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-        (cd /tmp/yay-bin && makepkg -si --noconfirm)
+        local tmp
+        tmp="$(mktemp -d)"
+        git clone https://aur.archlinux.org/yay-bin.git "$tmp/yay-bin"
+        (cd "$tmp/yay-bin" && makepkg -si --noconfirm)
+        rm -rf "$tmp"
     fi
     yay -S --needed - < "$REPO/packages/aur.txt"
 }
@@ -70,6 +73,15 @@ for f in "$REPO"/bin/*; do
     place "$f" "$HOME/.local/bin/$(basename "$f")"
     chmod +x "$HOME/.local/bin/$(basename "$f")"
 done
+
+# hyprpaper ne développe pas ~ : on met le vrai chemin du home
+sed -i "s|~/|$HOME/|g" "$HOME/.config/hypr/hyprpaper.conf"
+
+# zsh en shell de login, sinon .zprofile (lancement de Hyprland) n'est jamais lu
+if command -v zsh >/dev/null && [ "$(getent passwd "$USER" | cut -d: -f7)" != "$(command -v zsh)" ]; then
+    echo "Passage du shell à zsh :"
+    chsh -s "$(command -v zsh)"
+fi
 
 # Navigateur par défaut (remplace l'ancien mimeapps.list versionné)
 xdg-settings set default-web-browser firefox.desktop 2>/dev/null || true
