@@ -18,23 +18,11 @@ curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/insta
 curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash                    # configs uniquement
 ```
 
-Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à jour s'il y est déjà, puis se relance depuis ce clone. Pour pouvoir push ensuite, passer le remote en SSH une fois la clé configurée :
-
-```bash
-git -C ~/Documents/arch_dotfiles remote set-url origin git@github.com:OnlyArcoss/arch_dotfiles.git
-```
+Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à jour s'il y est déjà, puis se relance depuis ce clone.
 
 Depuis un clone existant : `./install.sh --packages` ou `./install.sh`. Les drivers graphiques se font après, avec `./gpu.sh` (voir plus bas).
 
 `install.sh` copie les fichiers du repo dans `$HOME`. Tout fichier existant est d'abord déplacé dans `~/.dotfiles-backup-<date>/`, rien n'est écrasé sans sauvegarde.
-
-Pour mettre le repo à jour depuis la machine :
-
-```bash
-./sync.sh            # recopie la conf actuelle dans le repo
-git diff             # vérifier
-git commit -am "update" && git push
-```
 
 ---
 
@@ -49,7 +37,7 @@ git commit -am "update" && git push
 | `config/mako/` | `~/.config/mako/` | `config` |
 | `config/swayosd/` | `~/.config/swayosd/` | `config.toml`, `style.css` |
 | `config/fastfetch/` | `~/.config/fastfetch/` | `config.jsonc` |
-| `config/btop/` | `~/.config/btop/` | `btop.conf` (thème uniquement, déposé par `install.sh`, pas synchronisé : btop réécrit tout le fichier) |
+| `config/btop/` | `~/.config/btop/` | `btop.conf` (thème uniquement) |
 | `config/gtk-3.0/`, `config/gtk-4.0/` | `~/.config/gtk-*/` | `settings.ini` (les `.css` GTK4 sont des liens vers le thème, recréés par `install.sh`) |
 | `config/nwg-look/` | `~/.config/nwg-look/` | réglages du thème GTK |
 | `config/git/ignore` | `~/.config/git/ignore` | gitignore global |
@@ -65,7 +53,7 @@ git commit -am "update" && git push
 
 ## Paquets
 
-`packages/` ne contient que **le minimum pour que la conf marche** (Hyprland, waybar, wofi, kitty, mako, swayosd, hyprlock, pipewire, bluetooth/wifi TUI, polices, curseur...). Les applis (navigateurs, dev, jeux...) s'installent à la main au besoin. La liste est maintenue à la main : `sync.sh` ne la régénère pas.
+`packages/` ne contient que **le minimum pour que la conf marche** (Hyprland, waybar, wofi, kitty, mako, swayosd, hyprlock, pipewire, bluetooth/wifi TUI, polices, curseur...). Les applis (navigateurs, dev, jeux...) s'installent à la main au besoin.
 
 Thème **Colloid** (GTK + icônes) : paquets AUR `colloid-gtk-theme` et `colloid-icon-theme`, installés avec `--packages` dans `/usr/share/` (toutes les couleurs, dont Purple).
 
