@@ -21,7 +21,7 @@ show_main_menu() {
 󰤄  Suspend
 ")" in
 *"Update system"*)
-        kitty --class kitty-float --hold -e bash -c 'sudo pacman -Syu && flatpak update'
+        kitty --class kitty-float --hold -e bash -c 'sudo pacman -Syu && { ! command -v flatpak >/dev/null || flatpak update; }'
         ;;
 *Restart*)
         systemctl reboot

@@ -1,2 +1,0 @@
-com.hypixel.HytaleLauncher
-org.vinegarhq.Sober

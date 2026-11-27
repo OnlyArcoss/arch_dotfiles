@@ -23,8 +23,6 @@ for f in system-menu waybar-recorder; do
     cp "$HOME/.local/bin/$f" "$REPO/bin/"
 done
 
-pacman -Qqen > "$REPO/packages/pacman.txt"
-pacman -Qqem > "$REPO/packages/aur.txt"
-flatpak list --app --columns=application > "$REPO/packages/flatpak.txt"
+# packages/*.txt n'est pas régénéré : c'est le minimum pour la conf, maintenu à la main
 
 echo "Repo synchronisé. Vérifie avec : git -C \"$REPO\" diff"

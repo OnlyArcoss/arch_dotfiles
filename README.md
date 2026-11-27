@@ -24,14 +24,14 @@ Le script clone le repo (HTTPS) dans `~/Documents/arch_dotfiles`, ou le met à j
 git -C ~/Documents/arch_dotfiles remote set-url origin git@github.com:OnlyArcoss/arch_dotfiles.git
 ```
 
-Depuis un clone existant : `./install.sh --packages` ou `./install.sh`.
+Depuis un clone existant : `./install.sh --packages` ou `./install.sh`. Les drivers graphiques se font après, avec `./gpu.sh` (voir plus bas).
 
 `install.sh` copie les fichiers du repo dans `$HOME`. Tout fichier existant est d'abord déplacé dans `~/.dotfiles-backup-<date>/`, rien n'est écrasé sans sauvegarde.
 
 Pour mettre le repo à jour depuis la machine :
 
 ```bash
-./sync.sh            # recopie la conf actuelle + régénère les listes de paquets
+./sync.sh            # recopie la conf actuelle dans le repo
 git diff             # vérifier
 git commit -am "update" && git push
 ```
@@ -56,53 +56,40 @@ git commit -am "update" && git push
 | `home/` | `~/` | `.zshrc`, `.zprofile`, `.gitconfig` |
 | `bin/` | `~/.local/bin/` | scripts perso (voir plus bas) |
 | `wallpapers/` | `~/Documents/wallpapers/` | `minimal_landscape.jpg` (utilisé par hyprpaper) |
-| `packages/` | — | `pacman.txt`, `aur.txt`, `flatpak.txt` |
+| `packages/` | — | `pacman.txt`, `aur.txt` : paquets minimum pour la conf |
+| `gpu.sh` | — | drivers graphiques NVIDIA / AMD / Intel |
 
 > **Secrets** : `.zshrc` charge `~/.zshrc.local` s'il existe. Les tokens (`NPM_TOKEN`, …) vont dans ce fichier, qui n'est **pas** versionné.
 
 ---
 
-## Paquets à installer
+## Paquets
 
-Listes complètes et à jour dans `packages/` (générées par `pacman -Qqen`, `pacman -Qqem`, `flatpak list`).
+`packages/` ne contient que **le minimum pour que la conf marche** (Hyprland, waybar, wofi, kitty, mako, swayosd, hyprlock, pipewire, bluetooth/wifi TUI, polices, curseur...). Les applis (navigateurs, dev, jeux...) s'installent à la main au besoin. La liste est maintenue à la main : `sync.sh` ne la régénère pas.
 
-### Base système
-`base` `base-devel` `linux` `linux-headers` `linux-firmware` `amd-ucode` `grub` `grub-theme-vimix` `efibootmgr` `os-prober` `dkms` `sudo` `zram-generator` `ntfs-3g` `smartmontools` `zip` `unrar` `wget` `tree` `vim` `nano` `git` `openssh`
+Thème **Colloid** (GTK + icônes) : paquets AUR `colloid-gtk-theme` et `colloid-icon-theme`, installés avec `--packages` dans `/usr/share/` (toutes les couleurs, dont Purple).
 
-### NVIDIA
-`nvidia-open` `nvidia-settings` `libva-nvidia-driver`
+### Drivers graphiques
 
-### Hyprland / bureau
-`hyprland` `hyprpaper` `hyprpolkitagent` `hyprshot` `xdg-desktop-portal-hyprland` `xdg-utils` `qt5-wayland` `qt6-wayland` `waybar-git` (AUR) `wofi` `mako` `dunst` `swayosd` `kitty` `nwg-look` `grim` `slurp` `wf-recorder` `xorg-server` `xorg-xinit` `polkit-kde-agent` `gnome-keyring` `seahorse`
+À part, à lancer quand on veut :
 
-### Audio / réseau / bluetooth
-`pipewire` `pipewire-alsa` `pipewire-jack` `pipewire-pulse` `wireplumber` `gst-plugin-pipewire` `libpulse` `wiremix` · `iwd` `impala` `wireless_tools` `wireguard-tools` `openresolv` `bind` · `bluez` `bluez-utils` `blueman` `bluetui`
-
-### Polices & thèmes
-`ttf-jetbrains-mono-nerd` `ttf-dejavu` `noto-fonts` `noto-fonts-cjk` `noto-fonts-emoji` `noto-fonts-extra` `gnome-themes-extra` · AUR : `bibata-cursor-theme-bin` `ttf-ms-fonts`
-Thème **Colloid** (GTK + icônes) installé à la main, pas via un paquet :
 ```bash
-git clone https://github.com/vinceliuice/Colloid-gtk-theme && ./Colloid-gtk-theme/install.sh -t purple -c dark
-git clone https://github.com/vinceliuice/Colloid-icon-theme && ./Colloid-icon-theme/install.sh -s default -t purple
+./gpu.sh           # détecte la carte (lspci)
+./gpu.sh amd       # ou force : nvidia | amd | intel
 ```
 
-### Terminal / outils
-`zsh` `zsh-autosuggestions` `btop` `htop` `fastfetch` `cava` `lazydocker` `yt-dlp` `python-pip` `nvm` `maven` `opencode` `ollama-cuda`
+| Carte | Paquets |
+|---|---|
+| NVIDIA | `nvidia-open-dkms` `nvidia-utils` `lib32-nvidia-utils` `nvidia-settings` `libva-nvidia-driver` + headers des noyaux installés |
+| AMD | `mesa` `lib32-mesa` `vulkan-radeon` `lib32-vulkan-radeon` |
+| Intel | `mesa` `lib32-mesa` `vulkan-intel` `lib32-vulkan-intel` `intel-media-driver` |
 
-### Dev
-`docker` `docker-buildx` `docker-compose` `postgresql` `zed` · AUR : `visual-studio-code-bin` `claude-code` `bruno-git` `postman-bin` `flutter-bin` `infisical-bin` `lunacy-bin`
+Le script active multilib (pour les `lib32-*`, utiles à Steam/Wine). Côté config, la seule variable spécifique NVIDIA (`LIBVA_DRIVER_NAME=nvidia` dans `env.lua`) n'est posée que si le module `nvidia` est chargé : rien à changer sur AMD/Intel.
 
-### Applications
-`firefox` `chromium` `discord` `signal-desktop` `obsidian` `keepassxc` `kleopatra` `libreoffice-still` `kdenlive` `mpv` `vlc` `vlc-plugin-chromecast` `vlc-plugin-mdns` `papers` `nautilus` `gnome-boxes` `gnome-disk-utility` `gnome-sound-recorder` `transmission-gtk` `transmission-cli` `steam` `prismlauncher` `v4l2loopback-dkms`
-AUR : `brave-bin` `google-chrome` `spotify` `vesktop-bin` `equibop-bin` `localsend` `gale-bin` `iriunwebcam-bin` `droidcam-obs-plugin` `obs-advanced-masks` `xpadneo-dkms` `yay`
-Flatpak : `com.hypixel.HytaleLauncher` `org.vinegarhq.Sober`
-
-### Services activés
-- système : `docker` `iwd` `systemd-networkd` `systemd-resolved` `bluetooth` `seatd` `fstrim.timer` `systemd-timesyncd`
-- utilisateur : `pipewire` `pipewire-pulse` `wireplumber` `gnome-keyring-daemon.socket`
+### Services
 
 ```bash
-sudo systemctl enable --now docker iwd systemd-networkd systemd-resolved bluetooth fstrim.timer
+sudo systemctl enable --now iwd bluetooth
 ```
 
 ---
@@ -173,7 +160,7 @@ Les applis TUI s'ouvrent dans une fenêtre kitty flottante (`kitty --class kitty
 
 | Script | Description |
 |---|---|
-| `system-menu` | Menu Wofi (dmenu) : mise à jour système (`pacman -Syu` + `flatpak update` dans un kitty flottant), redémarrer, éteindre, mettre en veille. Relancer le raccourci ferme le menu s'il est ouvert. Lié à `SUPER + Échap` et au bouton menu de waybar |
+| `system-menu` | Menu Wofi (dmenu) : mise à jour système (`pacman -Syu` + `flatpak update` si flatpak est installé, dans un kitty flottant), redémarrer, éteindre, mettre en veille. Relancer le raccourci ferme le menu s'il est ouvert. Lié à `SUPER + Échap` et au bouton menu de waybar |
 | `waybar-recorder` | Enregistrement d'écran d'une zone avec `wf-recorder` + `slurp` → `~/Documents/videos/`. `start` / `stop` / `toggle` / `status` (`status` renvoie du JSON avec la durée, utilisé par le module `custom/recorder` de waybar : icône à côté de l'horloge pour lancer, chrono pendant l'enregistrement, clic pour arrêter) |
 
 ---
@@ -182,11 +169,7 @@ Les applis TUI s'ouvrent dans une fenêtre kitty flottante (`kitty --class kitty
 
 Des choses référencées dans la config mais **absentes du système** au moment de la sauvegarde :
 
-- `hyprlock` (lié à `SUPER + L`), `brightnessctl`, `pamixer` (clic droit son dans waybar), `dolphin` (file manager) ne sont pas installés :
-  ```bash
-  sudo pacman -S hyprlock brightnessctl pamixer dolphin
-  ```
-- `starship` est installé à la main dans `/usr/local/bin` (pas via pacman) : `sudo pacman -S starship` sur une nouvelle machine.
+- `dolphin` (file manager, `SUPER + E`) n'est pas dans la liste minimale : l'installer ou changer `fileManager` dans `variables.lua`.
 - `~/.local/bin/toggle-waybar.sh` (lié à `SUPER + W`) n'existe pas.
 - Le module VPN de waybar fait `sudo wg-quick` : il faut une règle sudoers NOPASSWD pour que le clic marche.
 - Les noms d'écrans (`HDMI-A-1`, `DP-2`) sont propres à cette machine : à adapter dans `monitors.lua`, `hyprpaper.conf`, `waybar/config.jsonc` et `mako/config` sur une autre machine.

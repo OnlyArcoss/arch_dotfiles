@@ -2,7 +2,8 @@
 # Déploie les dotfiles du repo vers $HOME.
 # Les fichiers existants sont sauvegardés dans ~/.dotfiles-backup-<date> avant d'être remplacés.
 #   ./install.sh             -> configs uniquement
-#   ./install.sh --packages  -> installe aussi les paquets pacman / AUR / flatpak
+#   ./install.sh --packages  -> installe aussi le minimum pour que la conf marche (packages/*.txt)
+# Les drivers graphiques sont à part : ./gpu.sh
 # Sans clone préalable :
 #   curl -fsSL https://raw.githubusercontent.com/OnlyArcoss/arch_dotfiles/main/install.sh | bash -s -- --packages
 set -euo pipefail
@@ -32,17 +33,12 @@ fi
 BACKUP="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 install_packages() {
-    # multilib (steam) n'est pas activé par défaut
-    if ! grep -q '^\[multilib\]' /etc/pacman.conf; then
-        sudo sed -i '/^#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
-    fi
     sudo pacman -Syu --needed - < "$REPO/packages/pacman.txt"
     if ! command -v yay >/dev/null; then
         git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
         (cd /tmp/yay-bin && makepkg -si --noconfirm)
     fi
     yay -S --needed - < "$REPO/packages/aur.txt"
-    xargs -r flatpak install -y flathub < "$REPO/packages/flatpak.txt"
 }
 
 # place <source dans le repo> <destination>
@@ -89,4 +85,5 @@ if [ -d "$THEME" ]; then
 fi
 
 [ -d "$BACKUP" ] && echo "Anciens fichiers sauvegardés dans $BACKUP"
-echo "Terminé. Pense à créer ~/.zshrc.local pour les secrets (NPM_TOKEN...)."
+echo "Terminé. Drivers graphiques : $REPO/gpu.sh"
+echo "Pense à créer ~/.zshrc.local pour les secrets (NPM_TOKEN...)."
